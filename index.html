@@ -684,6 +684,146 @@ textarea.form-control{resize:vertical;min-height:56px}
       <div class="card" id="report-inv"></div>
     </div>
 
+
+    <!-- PAYROLL SCREEN -->
+    <div class="screen" id="screen-payroll">
+      <div class="page-header">
+        <div class="page-title">Payroll Management</div>
+        <div class="page-sub" id="payroll-sub-lbl">Monthly salary register</div>
+        <div class="page-actions">
+          <button class="btn btn-outline btn-sm" onclick="openPayrollSettings()">⚙ Settings</button>
+          <button class="btn btn-primary btn-sm" onclick="exportPayrollPDF()">📄 Export PDF</button>
+        </div>
+      </div>
+      <div class="card" style="padding:14px;margin-bottom:14px">
+        <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+          <div class="form-group" style="margin-bottom:0;flex:1;min-width:160px">
+            <label class="form-label">Payroll Month</label>
+            <input type="month" class="form-control" id="payroll-month" onchange="loadPayrollMonth()">
+          </div>
+          <div class="form-group" style="margin-bottom:0">
+            <label class="form-label">&nbsp;</label>
+            <button class="btn btn-primary" onclick="loadPayrollMonth()">Load</button>
+          </div>
+        </div>
+      </div>
+      <div class="kpi-row" id="payroll-kpis" style="margin-bottom:16px"></div>
+      <div class="section-title">Staff Salary Register</div>
+      <div id="payroll-staff-list"></div>
+      <div class="card" id="payroll-totals" style="display:none;margin-bottom:80px"></div>
+    </div>
+
+    <!-- DAILY REPORT SCREEN -->
+    <div class="screen" id="screen-dailyreport">
+      <div class="page-header">
+        <div class="page-title">Daily Report</div>
+        <div class="page-sub" id="report-date-lbl">Cleaning Activity Report</div>
+      </div>
+
+      <!-- Date + status bar -->
+      <div class="card" style="padding:12px 14px;margin-bottom:12px">
+        <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+          <div class="form-group" style="margin-bottom:0;flex:1;min-width:140px">
+            <label class="form-label">Report Date</label>
+            <input type="date" class="form-control" id="daily-report-date" onchange="loadDailyReportForDate()">
+          </div>
+          <div class="form-group" style="margin-bottom:0">
+            <label class="form-label">&nbsp;</label>
+            <button class="btn btn-primary" onclick="loadDailyReportForDate()">Load</button>
+          </div>
+          <div id="dr-status-badge" style="display:none"></div>
+        </div>
+      </div>
+
+      <!-- FORM (compose mode) -->
+      <div id="dr-form-area">
+
+        <!-- ATTENDANCE SECTION -->
+        <div class="section-title">👥 Attendance</div>
+        <div class="card" style="padding:14px;margin-bottom:12px">
+          <div style="font-size:11px;color:var(--text-muted);margin-bottom:10px">Tap each staff member to cycle: Present → Absent → On Permission</div>
+          <div id="dr-attendance-grid" style="display:flex;flex-wrap:wrap;gap:8px"></div>
+        </div>
+
+        <!-- SHIFT REPORTS -->
+        <div class="section-title">📋 Shift Reports</div>
+
+        <!-- Morning -->
+        <div class="card" style="padding:14px;margin-bottom:10px;border-left:4px solid #16a34a">
+          <div style="font-size:13px;font-weight:700;color:#166534;margin-bottom:8px">🌅 Morning Shift</div>
+          <div class="form-group" style="margin-bottom:8px">
+            <label class="form-label">Staff on Morning Shift</label>
+            <input type="text" class="form-control" id="dr-morning-staff" placeholder="e.g. Cecilia, Patience, Perpetual">
+          </div>
+          <div class="form-group" style="margin-bottom:0">
+            <label class="form-label">What was accomplished</label>
+            <textarea class="form-control" id="dr-morning-narrative" rows="3" placeholder="Describe what the morning team did..."></textarea>
+          </div>
+        </div>
+
+        <!-- Afternoon -->
+        <div class="card" style="padding:14px;margin-bottom:10px;border-left:4px solid #0369a1">
+          <div style="font-size:13px;font-weight:700;color:#0369a1;margin-bottom:8px">☀️ Afternoon Shift</div>
+          <div class="form-group" style="margin-bottom:8px">
+            <label class="form-label">Staff on Afternoon Shift</label>
+            <input type="text" class="form-control" id="dr-afternoon-staff" placeholder="e.g. Sophia, Deborah">
+          </div>
+          <div class="form-group" style="margin-bottom:0">
+            <label class="form-label">What was accomplished</label>
+            <textarea class="form-control" id="dr-afternoon-narrative" rows="3" placeholder="Describe what the afternoon team did..."></textarea>
+          </div>
+        </div>
+
+        <!-- Evening -->
+        <div class="card" style="padding:14px;margin-bottom:12px;border-left:4px solid #7c3aed">
+          <div style="font-size:13px;font-weight:700;color:#7c3aed;margin-bottom:8px">🌙 Evening Shift</div>
+          <div class="form-group" style="margin-bottom:8px">
+            <label class="form-label">Staff on Evening Shift</label>
+            <input type="text" class="form-control" id="dr-evening-staff" placeholder="e.g. Maxwell, Emmanuel, Gladys">
+          </div>
+          <div class="form-group" style="margin-bottom:0">
+            <label class="form-label">What was accomplished</label>
+            <textarea class="form-control" id="dr-evening-narrative" rows="3" placeholder="Describe what the evening team did..."></textarea>
+          </div>
+        </div>
+
+        <!-- PHOTOS -->
+        <div class="section-title">📷 Photos</div>
+        <div class="card" style="padding:14px;margin-bottom:12px">
+          <div style="font-size:11px;color:var(--text-muted);margin-bottom:10px">Add photos showing work completed today (max 5)</div>
+          <div id="dr-photo-preview" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px"></div>
+          <label style="display:inline-flex;align-items:center;gap:6px;background:var(--off-white);border:1.5px dashed var(--border);border-radius:var(--r-md);padding:10px 16px;cursor:pointer;font-size:12px;font-weight:600;color:var(--navy)">
+            📷 Add Photo
+            <input type="file" id="dr-photo-input" accept="image/*" multiple style="display:none" onchange="drAddPhotos(event)">
+          </label>
+        </div>
+
+        <!-- ADDITIONAL NOTES & ISSUES -->
+        <div class="section-title">📝 Additional Notes & Issues</div>
+        <div class="card" style="padding:14px;margin-bottom:12px">
+          <textarea class="form-control" id="dr-issues" rows="3" placeholder="Any issues, complaints, damages, or notes to flag for management..."></textarea>
+        </div>
+
+        <!-- ACTION BUTTONS -->
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:80px">
+          <button class="btn btn-primary" style="flex:1;min-width:140px" onclick="submitDailyReport()">✅ Submit &amp; Send Report</button>
+          <button class="btn btn-outline" onclick="previewDailyReport()">👁 Preview Email</button>
+        </div>
+      </div>
+
+      <!-- SUBMITTED VIEW (read mode) -->
+      <div id="dr-submitted-area" style="display:none">
+        <div id="dr-submitted-preview"></div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;margin-bottom:80px">
+          <button class="btn btn-primary" onclick="emailDailyReport()">✉️ Resend Email</button>
+          <button class="btn btn-outline" onclick="copyDailyReport()">📋 Copy Report</button>
+          <button class="btn btn-outline" onclick="exportDailyReportPDF()">📄 Download PDF</button>
+          <button class="btn btn-outline" style="color:var(--amber);border-color:var(--amber)" onclick="editDailyReport()">✏️ Edit Report</button>
+        </div>
+      </div>
+
+    </div>
+
   </main>
 
   <nav class="bottom-nav" id="bottom-nav"></nav>
@@ -1857,6 +1997,11 @@ async function initApp() {
   updateDateTime();
   setInterval(updateDateTime, 60000);
   buildBottomNav();
+  // Run post-login checks after a short delay so state loads first
+  setTimeout(function() {
+    checkMissedDailyReport();
+    checkPaymentReminder();
+  }, 2500);
   if (isManagement()) {
     buildQuickActions();
     buildActionBars();
@@ -5066,7 +5211,1102 @@ async function deleteVariant(invId, variantId) {
   } catch(e) { toast('Delete failed: ' + e.message, 'error'); }
   finally { hideLoading(); }
 }
+
+// ================================================================
+// PAYROLL SYSTEM
+// ================================================================
+let payrollSettings = null;
+let payrollRecords = {};
+let payrollCurrentMonth = '';
+
+function getPayrollSettings() {
+  if (payrollSettings) return payrollSettings;
+  try {
+    const saved = localStorage.getItem('3rock_payroll_settings');
+    if (saved) { payrollSettings = JSON.parse(saved); return payrollSettings; }
+  } catch(e) {}
+  payrollSettings = { baseSalary: 1100, absentRate: 50, uniformRate: 0, workingDays: 26, offDays: 4, directorEmails: '' };
+  return payrollSettings;
+}
+
+function savePayrollSettingsToLocal(s) {
+  payrollSettings = s;
+  try { localStorage.setItem('3rock_payroll_settings', JSON.stringify(s)); } catch(e) {}
+}
+
+function getPayrollRecords(month) {
+  if (payrollRecords[month]) return payrollRecords[month];
+  try {
+    const saved = localStorage.getItem('3rock_payroll_' + month);
+    if (saved) { payrollRecords[month] = JSON.parse(saved); return payrollRecords[month]; }
+  } catch(e) {}
+  payrollRecords[month] = {};
+  return payrollRecords[month];
+}
+
+function savePayrollRecordsToLocal(month, records) {
+  payrollRecords[month] = records;
+  try { localStorage.setItem('3rock_payroll_' + month, JSON.stringify(records)); } catch(e) {}
+  const payload = { id: month, month: month, records: JSON.stringify(records) };
+  supabaseClient.from('payroll_records').upsert(payload).then(({ error }) => {
+    if (error && !error.message.includes('does not exist')) console.warn('Payroll sync:', error.message);
+  });
+}
+
+async function loadPayrollFromSupabase(month) {
+  try {
+    const { data, error } = await supabaseClient.from('payroll_records').select('*').eq('month', month).single();
+    if (!error && data) {
+      const records = typeof data.records === 'string' ? JSON.parse(data.records) : data.records;
+      payrollRecords[month] = records;
+      try { localStorage.setItem('3rock_payroll_' + month, JSON.stringify(records)); } catch(e) {}
+      return records;
+    }
+  } catch(e) {}
+  return getPayrollRecords(month);
+}
+
+function openPayrollSettings() {
+  const s = getPayrollSettings();
+  document.getElementById('ps-base-salary').value = s.baseSalary;
+  document.getElementById('ps-absent-rate').value = s.absentRate;
+  document.getElementById('ps-uniform-rate').value = s.uniformRate;
+  document.getElementById('ps-working-days').value = s.workingDays;
+  document.getElementById('ps-off-days').value = s.offDays;
+  document.getElementById('ps-director-emails').value = s.directorEmails || '';
+  document.getElementById('ps-manager-emails').value = s.managerEmails || '';
+  document.getElementById('ps-reminder-day').value = s.reminderDay || '';
+  document.getElementById('ps-report-deadline').value = s.reportDeadline || '21:00';
+  openModal('modal-payroll-settings');
+}
+
+function savePayrollSettings() {
+  const s = {
+    baseSalary: parseFloat(document.getElementById('ps-base-salary').value) || 1100,
+    absentRate: parseFloat(document.getElementById('ps-absent-rate').value) || 50,
+    uniformRate: parseFloat(document.getElementById('ps-uniform-rate').value) || 0,
+    workingDays: parseInt(document.getElementById('ps-working-days').value) || 26,
+    offDays: parseInt(document.getElementById('ps-off-days').value) || 4,
+    directorEmails: document.getElementById('ps-director-emails').value.trim(),
+    managerEmails: document.getElementById('ps-manager-emails').value.trim(),
+    reminderDay: parseInt(document.getElementById('ps-reminder-day').value) || 0,
+    reportDeadline: document.getElementById('ps-report-deadline').value || '21:00'
+  };
+  savePayrollSettingsToLocal(s);
+  closeModal('modal-payroll-settings');
+  renderPayroll();
+  toast('Payroll settings saved', 'success');
+}
+
+async function loadPayrollMonth() {
+  const monthEl = document.getElementById('payroll-month');
+  const month = monthEl.value;
+  if (!month) { toast('Select a month', 'error'); return; }
+  payrollCurrentMonth = month;
+  showLoading('Loading payroll data...');
+  try { await loadPayrollFromSupabase(month); } catch(e) {}
+  finally { hideLoading(); }
+  renderPayroll();
+}
+
+function renderPayroll() {
+  const month = payrollCurrentMonth;
+  if (!month) return;
+  const s = getPayrollSettings();
+  const records = getPayrollRecords(month);
+  const monthLabel = new Date(month + '-01').toLocaleDateString('en-GB', { month: 'long', year: 'numeric' });
+  const subEl = document.getElementById('payroll-sub-lbl');
+  if (subEl) subEl.textContent = 'Payroll — ' + monthLabel;
+
+  const staffList = state.staff;
+  let totalBase = 0, totalDeductions = 0, totalNet = 0;
+  let rows = '';
+
+  staffList.forEach((st, idx) => {
+    const rec = records[st.id] || {
+      workingDays: s.workingDays, daysPresent: s.workingDays,
+      absentPerm: 0, absentNoPerm: 0, uniformDays: 0, otherDeductions: 0, remarks: ''
+    };
+    const absentDeduction = (rec.absentNoPerm || 0) * s.absentRate;
+    const uniformDeduction = (rec.uniformDays || 0) * s.uniformRate;
+    const totalDeduction = absentDeduction + uniformDeduction + (parseFloat(rec.otherDeductions) || 0);
+    const netPay = s.baseSalary - totalDeduction;
+    totalBase += s.baseSalary;
+    totalDeductions += totalDeduction;
+    totalNet += netPay;
+    const isLow = netPay < s.baseSalary * 0.8;
+    rows += '<div class="card" style="padding:12px;margin-bottom:8px;cursor:pointer" onclick="openPayrollEntry(\'' + esc(st.id) + '\')">'
+      + '<div style="display:flex;align-items:center;gap:10px">'
+      + '<div style="width:36px;height:36px;border-radius:50%;background:var(--navy);display:flex;align-items:center;justify-content:center;font-family:\'Barlow Condensed\',sans-serif;font-size:13px;font-weight:700;color:#fff;flex-shrink:0;overflow:hidden">'
+      + (st.photo ? '<img src="' + st.photo + '" style="width:100%;height:100%;object-fit:cover;border-radius:50%">' : esc(initials(st.name)))
+      + '</div>'
+      + '<div style="flex:1;min-width:0">'
+      + '<div style="font-weight:700;font-size:13px;color:var(--navy)">' + esc(st.name) + '</div>'
+      + '<div style="font-size:10px;color:var(--text-muted)">' + esc(st.role) + ' · ' + rec.daysPresent + '/' + rec.workingDays + ' days' + (rec.remarks ? ' · ' + esc(rec.remarks) : '') + '</div>'
+      + '</div>'
+      + '<div style="text-align:right;flex-shrink:0">'
+      + '<div style="font-family:\'Barlow Condensed\',sans-serif;font-size:20px;font-weight:800;color:' + (isLow ? 'var(--danger)' : 'var(--green)') + '">GHC ' + netPay.toLocaleString() + '</div>'
+      + (totalDeduction > 0 ? '<div style="font-size:10px;color:var(--danger)">−' + totalDeduction + ' deducted</div>' : '<div style="font-size:10px;color:var(--text-muted)">No deductions</div>')
+      + '</div></div></div>';
+  });
+
+  if (!staffList.length) rows = '<div class="empty-state"><div class="empty-icon">👥</div><div class="empty-text">No staff enrolled yet</div></div>';
+  document.getElementById('payroll-staff-list').innerHTML = rows;
+
+  const kpiEl = document.getElementById('payroll-kpis');
+  if (kpiEl) kpiEl.innerHTML =
+    '<div class="kpi-item"><div class="kpi-num" style="color:var(--navy)">' + staffList.length + '</div><div class="kpi-lbl">Total Staff</div></div>'
+    + '<div class="kpi-item"><div class="kpi-num" style="color:var(--green);font-size:16px">GHC ' + totalNet.toLocaleString() + '</div><div class="kpi-lbl">Net Payout</div></div>'
+    + '<div class="kpi-item"><div class="kpi-num" style="color:var(--danger);font-size:16px">GHC ' + totalDeductions.toLocaleString() + '</div><div class="kpi-lbl">Deductions</div></div>'
+    + '<div class="kpi-item"><div class="kpi-num" style="font-size:14px">GHC ' + totalBase.toLocaleString() + '</div><div class="kpi-lbl">Gross Total</div></div>';
+
+  const totalsEl = document.getElementById('payroll-totals');
+  if (totalsEl && staffList.length) {
+    totalsEl.style.display = 'block';
+    totalsEl.innerHTML = '<div class="card-title">Payroll Summary — ' + monthLabel + '</div>'
+      + detRow('Base Rate (per staff)', 'GHC ' + s.baseSalary.toLocaleString())
+      + detRow('Absent Deduction Rate', 'GHC ' + s.absentRate + '/day (no permission)')
+      + detRow('Uniform Violation Rate', 'GHC ' + s.uniformRate + '/day')
+      + detRow('Expected Working Days', s.workingDays + ' days')
+      + detRow('Total Staff', staffList.length)
+      + detRow('Total Gross', 'GHC ' + totalBase.toLocaleString())
+      + detRow('Total Deductions', 'GHC ' + totalDeductions.toLocaleString())
+      + '<div style="background:var(--navy);color:#fff;border-radius:var(--r-md);padding:12px 16px;margin-top:12px;display:flex;justify-content:space-between;align-items:center">'
+      + '<div style="font-family:\'Barlow Condensed\',sans-serif;font-size:16px;font-weight:700">TOTAL NET PAYOUT</div>'
+      + '<div style="font-family:\'Barlow Condensed\',sans-serif;font-size:26px;font-weight:800;color:var(--gold)">GHC ' + totalNet.toLocaleString() + '</div>'
+      + '</div>';
+  }
+}
+
+function openPayrollEntry(staffId) {
+  if (!currentUser || !['director','manager','supervisor'].includes(currentUser.role)) return;
+  const st = state.staff.find(x => x.id === staffId);
+  if (!st) return;
+  const s = getPayrollSettings();
+  const records = getPayrollRecords(payrollCurrentMonth);
+  const rec = records[staffId] || { workingDays: s.workingDays, daysPresent: s.workingDays, absentPerm: 0, absentNoPerm: 0, uniformDays: 0, otherDeductions: 0, remarks: '' };
+  document.getElementById('payroll-entry-title').textContent = 'Edit — ' + st.name;
+  document.getElementById('pe-staff-id').value = staffId;
+  document.getElementById('pe-staff-name').value = st.name;
+  document.getElementById('pe-working-days').value = rec.workingDays;
+  document.getElementById('pe-days-present').value = rec.daysPresent;
+  document.getElementById('pe-absent-perm').value = rec.absentPerm || 0;
+  document.getElementById('pe-absent-noperm').value = rec.absentNoPerm || 0;
+  document.getElementById('pe-uniform-days').value = rec.uniformDays || 0;
+  document.getElementById('pe-other-deductions').value = rec.otherDeductions || 0;
+  document.getElementById('pe-remarks').value = rec.remarks || '';
+  calcPayrollEntry();
+  openModal('modal-payroll-entry');
+}
+
+function calcPayrollEntry() {
+  const s = getPayrollSettings();
+  const absentNoPerm = parseFloat(document.getElementById('pe-absent-noperm').value) || 0;
+  const uniformDays = parseFloat(document.getElementById('pe-uniform-days').value) || 0;
+  const other = parseFloat(document.getElementById('pe-other-deductions').value) || 0;
+  const absDed = absentNoPerm * s.absentRate;
+  const uniDed = uniformDays * s.uniformRate;
+  const totalDed = absDed + uniDed + other;
+  const netPay = s.baseSalary - totalDed;
+  const preview = document.getElementById('pe-calc-preview');
+  if (preview) {
+    preview.style.display = 'block';
+    preview.innerHTML =
+      '<div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;font-size:11px;color:var(--text-secondary)">'
+      + '<span>Base Salary:</span><span style="font-weight:700;color:var(--navy)">GHC ' + s.baseSalary.toLocaleString() + '</span>'
+      + '<span>Absent Deduction:</span><span style="color:var(--danger)">−GHC ' + absDed + '</span>'
+      + '<span>Uniform Deduction:</span><span style="color:var(--danger)">−GHC ' + uniDed + '</span>'
+      + '<span>Other Deductions:</span><span style="color:var(--danger)">−GHC ' + other + '</span></div>'
+      + '<div style="border-top:2px solid var(--navy);margin-top:8px;padding-top:8px;display:flex;justify-content:space-between;align-items:center">'
+      + '<span style="font-weight:700;font-size:13px;color:var(--navy)">NET PAY</span>'
+      + '<span style="font-family:\'Barlow Condensed\',sans-serif;font-size:24px;font-weight:800;color:' + (netPay < s.baseSalary * 0.8 ? 'var(--danger)' : 'var(--green)') + '">GHC ' + netPay.toLocaleString() + '</span></div>';
+  }
+}
+
+function savePayrollEntry() {
+  const staffId = document.getElementById('pe-staff-id').value;
+  if (!staffId || !payrollCurrentMonth) return;
+  const rec = {
+    workingDays: parseInt(document.getElementById('pe-working-days').value) || 26,
+    daysPresent: parseInt(document.getElementById('pe-days-present').value) || 0,
+    absentPerm: parseInt(document.getElementById('pe-absent-perm').value) || 0,
+    absentNoPerm: parseInt(document.getElementById('pe-absent-noperm').value) || 0,
+    uniformDays: parseInt(document.getElementById('pe-uniform-days').value) || 0,
+    otherDeductions: parseFloat(document.getElementById('pe-other-deductions').value) || 0,
+    remarks: document.getElementById('pe-remarks').value.trim(),
+    updatedby: currentUser.name,
+    updatedat: new Date().toISOString()
+  };
+  const records = getPayrollRecords(payrollCurrentMonth);
+  records[staffId] = rec;
+  savePayrollRecordsToLocal(payrollCurrentMonth, records);
+  closeModal('modal-payroll-entry');
+  renderPayroll();
+  toast('Payroll entry saved', 'success');
+}
+
+async function exportPayrollPDF() {
+  const month = payrollCurrentMonth;
+  if (!month) { toast('Load a payroll month first', 'error'); return; }
+  const s = getPayrollSettings();
+  const records = getPayrollRecords(month);
+  const monthLabel = new Date(month + '-01').toLocaleDateString('en-GB', { month: 'long', year: 'numeric' });
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'landscape' });
+  doc.setFillColor(10,22,40); doc.rect(0,0,297,32,'F');
+  doc.setFillColor(204,31,46); doc.rect(0,30,297,3,'F');
+  doc.setTextColor(255,255,255); doc.setFontSize(22); doc.text('3-Rock Builders',14,18);
+  doc.setFontSize(10); doc.text('Payroll Register — ' + monthLabel,14,26);
+  doc.text('Generated: '+new Date().toLocaleDateString(),200,26);
+  let y = 42;
+  const cols = [['#',8],['Staff Name',46],['Days Present',24],['Absent (NoPerm)',28],['Uniform Viol.',24],['Abs.Ded.',22],['Unif.Ded.',22],['Other Ded.',22],['Total Ded.',22],['Net Pay (GHC)',28]];
+  doc.setFillColor(20,32,64); doc.rect(10,y,277,8,'F');
+  doc.setTextColor(255,255,255); doc.setFontSize(7.5);
+  let x = 12;
+  cols.forEach(function(c) { doc.text(c[0],x,y+5.5); x+=c[1]; });
+  y += 8;
+  let totalNet = 0;
+  state.staff.forEach(function(st, i) {
+    const rec = records[st.id] || { workingDays:s.workingDays,daysPresent:s.workingDays,absentNoPerm:0,uniformDays:0,otherDeductions:0 };
+    const absDed = (rec.absentNoPerm||0)*s.absentRate;
+    const uniDed = (rec.uniformDays||0)*s.uniformRate;
+    const totalDed = absDed + uniDed + (parseFloat(rec.otherDeductions)||0);
+    const net = s.baseSalary - totalDed;
+    totalNet += net;
+    if (i%2===0) { doc.setFillColor(247,249,253); } else { doc.setFillColor(255,255,255); }
+    doc.rect(10,y,277,7,'F');
+    doc.setTextColor(10,22,40); doc.setFontSize(7.5);
+    let cx=12;
+    const row = [i+1, st.name, rec.daysPresent+'/'+rec.workingDays, rec.absentNoPerm||0, rec.uniformDays||0, 'GHC '+absDed, 'GHC '+uniDed, 'GHC '+(parseFloat(rec.otherDeductions)||0), 'GHC '+totalDed, 'GHC '+net];
+    cols.forEach(function(c,ci) { doc.text(String(row[ci]),cx,y+5); cx+=c[1]; });
+    y+=7;
+    if (y>185) { doc.addPage(); y=20; }
+  });
+  doc.setFillColor(10,22,40); doc.rect(10,y,277,9,'F');
+  doc.setTextColor(255,255,255); doc.setFontSize(9);
+  doc.text('TOTAL NET PAYOUT',12,y+6);
+  doc.text('GHC '+totalNet.toLocaleString(),255,y+6);
+  doc.save('3Rock_Payroll_'+month+'.pdf');
+}
+
+// ================================================================
+// DAILY REPORT SYSTEM  — supervisor-driven input + HTML email
+// ================================================================
+
+// In-memory photo store for current draft: array of { dataUrl, name }
+var drPhotos = [];
+
+// Attendance state for current draft: { staffId: 'present'|'absent'|'permission' }
+var drAttendance = {};
+
+// Currently loaded report data for the active date
+var drCurrentData = null;
+var drCurrentDate = '';
+
+// ── Load / init ──────────────────────────────────────────────────
+
+async function loadDailyReportForDate() {
+  const dateEl = document.getElementById('daily-report-date');
+  const d = dateEl.value || todayStr();
+  dateEl.value = d;
+  drCurrentDate = d;
+
+  const dateLbl = document.getElementById('report-date-lbl');
+  if (dateLbl) dateLbl.textContent = new Date(d + 'T12:00:00').toLocaleDateString('en-GB', { weekday:'long', day:'numeric', month:'long', year:'numeric' });
+
+  showLoading('Loading report...');
+  try {
+    const { data, error } = await supabaseClient.from('daily_reports').select('*').eq('date', d).single();
+    if (!error && data) {
+      drCurrentData = data;
+      showSubmittedReport(data);
+    } else {
+      drCurrentData = null;
+      showDraftForm(d);
+    }
+  } catch(e) {
+    drCurrentData = null;
+    showDraftForm(d);
+  } finally { hideLoading(); }
+}
+
+function showDraftForm(date) {
+  document.getElementById('dr-form-area').style.display = '';
+  document.getElementById('dr-submitted-area').style.display = 'none';
+
+  // Status badge
+  const badge = document.getElementById('dr-status-badge');
+  badge.style.display = 'inline-flex';
+  badge.innerHTML = '<span style="background:#fef3c7;color:#92400e;padding:3px 10px;border-radius:20px;font-size:10px;font-weight:700">DRAFT — NOT SUBMITTED</span>';
+
+  // Clear form
+  document.getElementById('dr-morning-staff').value = '';
+  document.getElementById('dr-morning-narrative').value = '';
+  document.getElementById('dr-afternoon-staff').value = '';
+  document.getElementById('dr-afternoon-narrative').value = '';
+  document.getElementById('dr-evening-staff').value = '';
+  document.getElementById('dr-evening-narrative').value = '';
+  document.getElementById('dr-issues').value = '';
+  drPhotos = [];
+  renderDrPhotos();
+
+  // Build attendance grid
+  drAttendance = {};
+  state.staff.forEach(function(st) { drAttendance[st.id] = 'present'; });
+  renderAttendanceGrid();
+}
+
+function showSubmittedReport(data) {
+  document.getElementById('dr-form-area').style.display = 'none';
+  document.getElementById('dr-submitted-area').style.display = '';
+
+  const badge = document.getElementById('dr-status-badge');
+  badge.style.display = 'inline-flex';
+  badge.innerHTML = '<span style="background:#dcfce7;color:#166534;padding:3px 10px;border-radius:20px;font-size:10px;font-weight:700">✅ SUBMITTED</span>';
+
+  const html = buildReportEmailHTML(data);
+  const preview = document.getElementById('dr-submitted-preview');
+  preview.innerHTML = html;
+  preview._reportData = data;
+}
+
+function editDailyReport() {
+  if (!drCurrentData) return;
+  const d = drCurrentData;
+  document.getElementById('dr-form-area').style.display = '';
+  document.getElementById('dr-submitted-area').style.display = 'none';
+
+  document.getElementById('dr-morning-staff').value = d.morning_staff || '';
+  document.getElementById('dr-morning-narrative').value = d.morning_narrative || '';
+  document.getElementById('dr-afternoon-staff').value = d.afternoon_staff || '';
+  document.getElementById('dr-afternoon-narrative').value = d.afternoon_narrative || '';
+  document.getElementById('dr-evening-staff').value = d.evening_staff || '';
+  document.getElementById('dr-evening-narrative').value = d.evening_narrative || '';
+  document.getElementById('dr-issues').value = d.issues || '';
+
+  // Restore attendance
+  drAttendance = {};
+  try { drAttendance = typeof d.attendance === 'string' ? JSON.parse(d.attendance) : (d.attendance || {}); } catch(e) {}
+  state.staff.forEach(function(st) { if (!drAttendance[st.id]) drAttendance[st.id] = 'present'; });
+  renderAttendanceGrid();
+
+  // Restore photos
+  drPhotos = [];
+  try { drPhotos = typeof d.photos === 'string' ? JSON.parse(d.photos) : (d.photos || []); } catch(e) {}
+  renderDrPhotos();
+
+  const badge = document.getElementById('dr-status-badge');
+  badge.innerHTML = '<span style="background:#fef3c7;color:#92400e;padding:3px 10px;border-radius:20px;font-size:10px;font-weight:700">EDITING</span>';
+}
+
+// ── Attendance grid ───────────────────────────────────────────────
+
+function renderAttendanceGrid() {
+  const grid = document.getElementById('dr-attendance-grid');
+  if (!grid) return;
+  const statusConfig = {
+    present:    { label:'Present',     bg:'#1e3a5f', color:'#fff' },
+    absent:     { label:'Absent',      bg:'#dc2626', color:'#fff' },
+    permission: { label:'Permission',  bg:'#d97706', color:'#fff' }
+  };
+  grid.innerHTML = state.staff.map(function(st) {
+    const status = drAttendance[st.id] || 'present';
+    const cfg = statusConfig[status];
+    return '<div onclick="cycleAttendance(\'' + esc(st.id) + '\')" style="cursor:pointer;padding:6px 12px;border-radius:20px;font-size:11px;font-weight:700;background:' + cfg.bg + ';color:' + cfg.color + ';user-select:none;transition:all .15s">'
+      + esc(st.name.toUpperCase())
+      + '<span style="font-size:9px;opacity:.8;margin-left:4px">(' + cfg.label + ')</span>'
+      + '</div>';
+  }).join('');
+}
+
+function cycleAttendance(staffId) {
+  const order = ['present', 'absent', 'permission'];
+  const cur = drAttendance[staffId] || 'present';
+  drAttendance[staffId] = order[(order.indexOf(cur) + 1) % 3];
+  renderAttendanceGrid();
+}
+
+// ── Photos ────────────────────────────────────────────────────────
+
+function drAddPhotos(event) {
+  const files = Array.from(event.target.files);
+  const remaining = 5 - drPhotos.length;
+  if (remaining <= 0) { toast('Maximum 5 photos', 'error'); return; }
+  const toAdd = files.slice(0, remaining);
+  let loaded = 0;
+  toAdd.forEach(function(file) {
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      drPhotos.push({ dataUrl: e.target.result, name: file.name });
+      loaded++;
+      if (loaded === toAdd.length) renderDrPhotos();
+    };
+    reader.readAsDataURL(file);
+  });
+  event.target.value = '';
+}
+
+function renderDrPhotos() {
+  const preview = document.getElementById('dr-photo-preview');
+  if (!preview) return;
+  preview.innerHTML = drPhotos.map(function(p, i) {
+    return '<div style="position:relative;width:72px;height:72px;border-radius:var(--r-md);overflow:hidden;border:1px solid var(--border)">'
+      + '<img src="' + p.dataUrl + '" style="width:100%;height:100%;object-fit:cover">'
+      + '<button onclick="drRemovePhoto(' + i + ')" style="position:absolute;top:2px;right:2px;background:rgba(0,0,0,.6);color:#fff;border:none;border-radius:50%;width:18px;height:18px;font-size:11px;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1">✕</button>'
+      + '</div>';
+  }).join('');
+}
+
+function drRemovePhoto(idx) {
+  drPhotos.splice(idx, 1);
+  renderDrPhotos();
+}
+
+// ── Submit ────────────────────────────────────────────────────────
+
+async function submitDailyReport() {
+  const date = drCurrentDate || todayStr();
+  const morningStaff = document.getElementById('dr-morning-staff').value.trim();
+  const morningNarrative = document.getElementById('dr-morning-narrative').value.trim();
+  const afternoonStaff = document.getElementById('dr-afternoon-staff').value.trim();
+  const afternoonNarrative = document.getElementById('dr-afternoon-narrative').value.trim();
+  const eveningStaff = document.getElementById('dr-evening-staff').value.trim();
+  const eveningNarrative = document.getElementById('dr-evening-narrative').value.trim();
+  const issues = document.getElementById('dr-issues').value.trim();
+
+  if (!morningNarrative && !afternoonNarrative && !eveningNarrative) {
+    toast('Please fill in at least one shift report', 'error'); return;
+  }
+
+  // Count attendance
+  const presentStaff = state.staff.filter(function(s) { return (drAttendance[s.id] || 'present') === 'present'; });
+  const absentStaff = state.staff.filter(function(s) { return drAttendance[s.id] === 'absent'; });
+  const permissionStaff = state.staff.filter(function(s) { return drAttendance[s.id] === 'permission'; });
+
+  const reportData = {
+    id: date,
+    date: date,
+    morning_staff: morningStaff,
+    morning_narrative: morningNarrative,
+    afternoon_staff: afternoonStaff,
+    afternoon_narrative: afternoonNarrative,
+    evening_staff: eveningStaff,
+    evening_narrative: eveningNarrative,
+    issues: issues,
+    photos: JSON.stringify(drPhotos),
+    attendance: JSON.stringify(drAttendance),
+    present_count: presentStaff.length,
+    absent_count: absentStaff.length,
+    permission_count: permissionStaff.length,
+    submitted_by: currentUser ? currentUser.name : '',
+    submitted_role: currentUser ? currentUser.role : '',
+    submitted_at: new Date().toISOString()
+  };
+
+  showLoading('Submitting report...');
+  try {
+    // Save to Supabase daily_reports table
+    const { error } = await supabaseClient.from('daily_reports').upsert(reportData);
+    if (error && !error.message.includes('does not exist')) {
+      console.warn('daily_reports save:', error.message);
+    }
+
+    // ── AUTO-TALLY ATTENDANCE INTO PAYROLL ───────────────────────
+    const month = date.slice(0, 7);
+    const payRecords = getPayrollRecords(month);
+    state.staff.forEach(function(st) {
+      const status = drAttendance[st.id] || 'present';
+      if (!payRecords[st.id]) {
+        const s = getPayrollSettings();
+        payRecords[st.id] = { workingDays: s.workingDays, daysPresent: 0, absentPerm: 0, absentNoPerm: 0, uniformDays: 0, otherDeductions: 0, remarks: '', _dailyDays: 0 };
+      }
+      const rec = payRecords[st.id];
+      if (!rec._dailyDays) rec._dailyDays = 0;
+      // Only count if this is the first tally for this date per staff
+      const tallyKey = '_tally_' + date;
+      if (!rec[tallyKey]) {
+        rec[tallyKey] = status;
+        rec._dailyDays = (rec._dailyDays || 0) + 1;
+        if (status === 'present') {
+          rec.daysPresent = (rec.daysPresent || 0) + 1;
+        } else if (status === 'permission') {
+          rec.absentPerm = (rec.absentPerm || 0) + 1;
+        } else if (status === 'absent') {
+          rec.absentNoPerm = (rec.absentNoPerm || 0) + 1;
+        }
+      } else if (rec[tallyKey] !== status) {
+        // Status changed for this date — adjust
+        const old = rec[tallyKey];
+        if (old === 'present') rec.daysPresent = Math.max(0, (rec.daysPresent || 1) - 1);
+        else if (old === 'permission') rec.absentPerm = Math.max(0, (rec.absentPerm || 1) - 1);
+        else if (old === 'absent') rec.absentNoPerm = Math.max(0, (rec.absentNoPerm || 1) - 1);
+        rec[tallyKey] = status;
+        if (status === 'present') rec.daysPresent = (rec.daysPresent || 0) + 1;
+        else if (status === 'permission') rec.absentPerm = (rec.absentPerm || 0) + 1;
+        else if (status === 'absent') rec.absentNoPerm = (rec.absentNoPerm || 0) + 1;
+      }
+    });
+    savePayrollRecordsToLocal(month, payRecords);
+    // ─────────────────────────────────────────────────────────────
+
+    drCurrentData = reportData;
+    showSubmittedReport(reportData);
+
+    // Send email
+    emailDailyReport();
+    toast('Report submitted & email sending...', 'success');
+  } catch(e) {
+    toast('Submit failed: ' + e.message, 'error');
+  } finally { hideLoading(); }
+}
+
+// ── Preview ───────────────────────────────────────────────────────
+
+function previewDailyReport() {
+  const date = drCurrentDate || todayStr();
+  const presentStaff = state.staff.filter(function(s) { return (drAttendance[s.id] || 'present') === 'present'; });
+  const absentStaff = state.staff.filter(function(s) { return drAttendance[s.id] === 'absent'; });
+  const permissionStaff = state.staff.filter(function(s) { return drAttendance[s.id] === 'permission'; });
+  const draft = {
+    date: date,
+    morning_staff: document.getElementById('dr-morning-staff').value,
+    morning_narrative: document.getElementById('dr-morning-narrative').value,
+    afternoon_staff: document.getElementById('dr-afternoon-staff').value,
+    afternoon_narrative: document.getElementById('dr-afternoon-narrative').value,
+    evening_staff: document.getElementById('dr-evening-staff').value,
+    evening_narrative: document.getElementById('dr-evening-narrative').value,
+    issues: document.getElementById('dr-issues').value,
+    photos: JSON.stringify(drPhotos),
+    attendance: JSON.stringify(drAttendance),
+    present_count: presentStaff.length,
+    absent_count: absentStaff.length,
+    permission_count: permissionStaff.length,
+    submitted_by: currentUser ? currentUser.name : '',
+    submitted_role: currentUser ? currentUser.role : ''
+  };
+  // Show in a bottom sheet style
+  const html = buildReportEmailHTML(draft);
+  const existing = document.getElementById('dr-preview-overlay');
+  if (existing) existing.remove();
+  const overlay = document.createElement('div');
+  overlay.id = 'dr-preview-overlay';
+  overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:9000;overflow-y:auto;padding:20px 10px 80px';
+  overlay.innerHTML = '<div style="max-width:560px;margin:0 auto">'
+    + '<div style="display:flex;justify-content:flex-end;margin-bottom:8px">'
+    + '<button onclick="document.getElementById(\'dr-preview-overlay\').remove()" style="background:#fff;border:none;border-radius:20px;padding:6px 16px;font-weight:700;cursor:pointer">✕ Close Preview</button>'
+    + '</div>' + html + '</div>';
+  document.body.appendChild(overlay);
+}
+
+// ── Build the branded HTML email ──────────────────────────────────
+
+function buildReportEmailHTML(data) {
+  var date = data.date || todayStr();
+  var dateStr = new Date(date + 'T12:00:00').toLocaleDateString('en-GB', { weekday:'long', day:'numeric', month:'long', year:'numeric' });
+
+  // Attendance
+  var attendance = {};
+  try { attendance = typeof data.attendance === 'string' ? JSON.parse(data.attendance) : (data.attendance || {}); } catch(e) {}
+  var presentList = state.staff.filter(function(s){ return (attendance[s.id]||'present')==='present'; });
+  var absentList  = state.staff.filter(function(s){ return attendance[s.id]==='absent'; });
+  var permList    = state.staff.filter(function(s){ return attendance[s.id]==='permission'; });
+
+  // Photos
+  var photos = [];
+  try { photos = typeof data.photos === 'string' ? JSON.parse(data.photos) : (data.photos || []); } catch(e) {}
+
+  var totalIssues = (data.issues && data.issues.trim()) ? data.issues.trim().split('\n').filter(function(l){return l.trim();}).length : 0;
+
+  // Pill badge helper
+  function pill(name) {
+    return '<span style="display:inline-block;background:#1e3a5f;color:#fff;border-radius:20px;padding:5px 14px;font-size:12px;font-weight:700;margin:3px;letter-spacing:.5px">' + esc(name.toUpperCase()) + '</span>';
+  }
+
+  // Shift block helper
+  function shiftBlock(emoji, label, color, bg, border, staffStr, narrative) {
+    if (!narrative && !staffStr) return '';
+    return '<div style="background:' + bg + ';border-radius:10px;padding:16px;margin-bottom:12px;border-left:5px solid ' + border + '">'
+      + '<div style="font-size:15px;font-weight:700;color:' + color + ';margin-bottom:8px">' + emoji + ' ' + label + '</div>'
+      + (staffStr ? '<p style="font-size:13px;margin:0 0 8px"><strong>' + esc(staffStr.toUpperCase().replace(/,\s*/g,', ')) + ':</strong> ' + esc(narrative) + '</p>'
+                  : '<p style="font-size:13px;margin:0">' + esc(narrative) + '</p>')
+      + '</div>';
+  }
+
+  // Photo grid
+  var photoHtml = '';
+  if (photos.length) {
+    photoHtml = '<div style="background:#fff;border-radius:12px;padding:16px;margin-bottom:16px;box-shadow:0 2px 8px rgba(0,0,0,.06)">'
+      + '<h3 style="font-size:16px;font-weight:700;color:#1e3a5f;margin:0 0 12px;padding-bottom:8px;border-bottom:2px solid #e2e8f0">📷 Photos</h3>'
+      + '<div style="display:flex;flex-wrap:wrap;gap:8px">'
+      + photos.map(function(p){ return '<img src="' + p.dataUrl + '" style="width:120px;height:90px;object-fit:cover;border-radius:8px;border:1px solid #e2e8f0">'; }).join('')
+      + '</div></div>';
+  }
+
+  // Issues
+  var issuesHtml = '';
+  if (data.issues && data.issues.trim()) {
+    var lines = data.issues.trim().split('\n').filter(function(l){return l.trim();});
+    issuesHtml = '<div style="background:#fff;border-radius:12px;padding:16px;margin-bottom:16px;box-shadow:0 2px 8px rgba(0,0,0,.06)">'
+      + '<h3 style="font-size:16px;font-weight:700;color:#b91c1c;margin:0 0 12px;padding-bottom:8px;border-bottom:2px solid #fca5a5">📝 Additional Notes &amp; Issues</h3>'
+      + lines.map(function(l){ return '<p style="font-size:13px;color:#7f1d1d;margin:4px 0">• ' + esc(l) + '</p>'; }).join('')
+      + '</div>';
+  }
+
+  var html = '<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">'
+    + '<style>body{font-family:Arial,sans-serif;margin:0;padding:0;background:#f0f4f8}*{box-sizing:border-box}</style></head>'
+    + '<body><div style="max-width:600px;margin:20px auto;background:#f0f4f8;padding:16px">'
+
+    // Header
+    + '<div style="background:#1e3a5f;border-radius:14px;padding:24px;text-align:center;margin-bottom:16px">'
+    + '<div style="font-size:36px;margin-bottom:6px">🧹</div>'
+    + '<h1 style="color:#fff;font-size:24px;font-weight:800;margin:0 0 4px">Cleaning Activity Report</h1>'
+    + '<p style="color:#cbd5e1;margin:0 0 4px;font-size:14px">' + esc(dateStr) + '</p>'
+    + '<p style="color:#94a3b8;margin:0;font-size:12px">3 Rock Builders Company Limited</p>'
+    + '</div>'
+
+    // Executive Summary
+    + '<div style="background:#fff;border-radius:12px;padding:16px;margin-bottom:16px;box-shadow:0 2px 8px rgba(0,0,0,.06)">'
+    + '<h2 style="font-size:18px;font-weight:700;color:#1e3a5f;margin:0 0 4px;display:flex;align-items:center;gap:6px">📊 Executive Summary</h2>'
+    + '<div style="height:2px;background:#1e3a5f;margin-bottom:16px"></div>'
+    + '<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">'
+    + kpiCard(String(presentList.length), 'Staff Present', '#2563eb', '#1d4ed8')
+    + kpiCard(String(absentList.length), 'Staff Absent', '#dc2626', '#b91c1c')
+    + kpiCard(String(permList.length), 'On Permission', '#16a34a', '#15803d')
+    + kpiCard(String([data.morning_narrative, data.afternoon_narrative, data.evening_narrative].filter(Boolean).length), 'Total Reports', '#2563eb', '#1d4ed8')
+    + kpiCard(String(photos.length), 'Photos', '#7c3aed', '#6d28d9')
+    + kpiCard(String(totalIssues), 'Issues', '#dc2626', '#b91c1c')
+    + '</div></div>'
+
+    // Staff Present pills
+    + (presentList.length ? '<div style="background:#fff;border-radius:12px;padding:16px;margin-bottom:16px;box-shadow:0 2px 8px rgba(0,0,0,.06)">'
+      + '<h3 style="font-size:16px;font-weight:700;color:#1e3a5f;margin:0 0 12px;display:flex;align-items:center;gap:6px">👥 Staff Present:</h3>'
+      + presentList.map(function(s){return pill(s.name);}).join('') + '</div>' : '')
+
+    // Absent
+    + (absentList.length ? '<div style="background:#fff;border-radius:12px;padding:16px;margin-bottom:16px;box-shadow:0 2px 8px rgba(0,0,0,.06)">'
+      + '<h3 style="font-size:16px;font-weight:700;color:#dc2626;margin:0 0 12px;display:flex;align-items:center;gap:6px">❌ Staff Absent:</h3>'
+      + absentList.map(function(s){'<span style="display:inline-block;background:#dc2626;color:#fff;border-radius:20px;padding:5px 14px;font-size:12px;font-weight:700;margin:3px">'+esc(s.name.toUpperCase())+'</span>';}).join('') + '</div>' : '')
+
+    // Permission
+    + (permList.length ? '<div style="background:#fff;border-radius:12px;padding:16px;margin-bottom:16px;box-shadow:0 2px 8px rgba(0,0,0,.06)">'
+      + '<h3 style="font-size:16px;font-weight:700;color:#d97706;margin:0 0 12px;display:flex;align-items:center;gap:6px">🟡 On Permission:</h3>'
+      + permList.map(function(s){'<span style="display:inline-block;background:#d97706;color:#fff;border-radius:20px;padding:5px 14px;font-size:12px;font-weight:700;margin:3px">'+esc(s.name.toUpperCase())+'</span>';}).join('') + '</div>' : '')
+
+    // Shift Reports
+    + '<div style="background:#fff;border-radius:12px;padding:16px;margin-bottom:16px;box-shadow:0 2px 8px rgba(0,0,0,.06)">'
+    + '<h3 style="font-size:16px;font-weight:700;color:#1e3a5f;margin:0 0 4px;display:flex;align-items:center;gap:6px">📋 Shift Reports</h3>'
+    + '<div style="height:2px;background:#1e3a5f;margin-bottom:14px"></div>'
+    + shiftBlock('🌅','Morning Shift','#166534','#f0fdf4','#16a34a', data.morning_staff, data.morning_narrative)
+    + shiftBlock('☀️','Afternoon Shift','#0369a1','#eff6ff','#0369a1', data.afternoon_staff, data.afternoon_narrative)
+    + shiftBlock('🌙','Evening Shift','#7c3aed','#faf5ff','#7c3aed', data.evening_staff, data.evening_narrative)
+    + '</div>'
+
+    // Photos
+    + photoHtml
+
+    // Issues
+    + issuesHtml
+
+    // Footer
+    + '<div style="background:#fff;border-radius:12px;padding:16px;border-left:4px solid #1e3a5f;box-shadow:0 2px 8px rgba(0,0,0,.06)">'
+    + '<p style="color:#94a3b8;font-size:12px;margin:0 0 4px">Generated: ' + new Date(data.submitted_at || Date.now()).toLocaleDateString('en-GB', {weekday:'long',day:'numeric',month:'long',year:'numeric'}) + '</p>'
+    + '<p style="color:#1e3a5f;font-weight:700;font-size:15px;margin:0">' + esc(data.submitted_by || '') + '</p>'
+    + '<p style="color:#64748b;font-size:12px;margin:0;text-transform:capitalize">' + esc(data.submitted_role || '') + '</p>'
+    + '</div>'
+
+    + '</div></body></html>';
+
+  return html;
+}
+
+function kpiCard(value, label, color, borderColor) {
+  return '<div style="border-left:4px solid ' + borderColor + ';padding:12px;background:#f8fafc;border-radius:4px">'
+    + '<div style="font-size:32px;font-weight:800;color:' + color + ';line-height:1">' + esc(value) + '</div>'
+    + '<div style="font-size:12px;color:#64748b;margin-top:2px">' + esc(label) + '</div>'
+    + '</div>';
+}
+
+// ── Email + Copy + PDF ────────────────────────────────────────────
+
+function emailDailyReport() {
+  const data = drCurrentData || {};
+  if (!data.date) { toast('No report to send', 'error'); return; }
+  const s = getPayrollSettings();
+  const toEmails = [s.directorEmails, s.managerEmails].filter(Boolean).join(',');
+  const date = data.date;
+  const dateStr = new Date(date+'T12:00:00').toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+
+  // Build plain-text fallback
+  var attendance = {};
+  try { attendance = typeof data.attendance==='string'?JSON.parse(data.attendance):(data.attendance||{}); } catch(e) {}
+  var presentList = state.staff.filter(function(s){return (attendance[s.id]||'present')==='present';});
+  var absentList  = state.staff.filter(function(s){return attendance[s.id]==='absent';});
+  var permList    = state.staff.filter(function(s){return attendance[s.id]==='permission';});
+
+  var body = '🧹 Cleaning Activity Report — ' + dateStr + '\n3 Rock Builders Company Limited\n'
+    + '='.repeat(50) + '\n\n'
+    + 'EXECUTIVE SUMMARY\n'
+    + '• Staff Present: ' + presentList.length + ' — ' + presentList.map(function(s){return s.name;}).join(', ') + '\n'
+    + '• Staff Absent: ' + absentList.length + (absentList.length ? ' — ' + absentList.map(function(s){return s.name;}).join(', ') : '') + '\n'
+    + '• On Permission: ' + permList.length + (permList.length ? ' — ' + permList.map(function(s){return s.name;}).join(', ') : '') + '\n\n'
+    + 'SHIFT REPORTS\n'
+    + (data.morning_narrative ? '🌅 Morning — ' + (data.morning_staff?data.morning_staff+': ':'') + data.morning_narrative + '\n\n' : '')
+    + (data.afternoon_narrative ? '☀️ Afternoon — ' + (data.afternoon_staff?data.afternoon_staff+': ':'') + data.afternoon_narrative + '\n\n' : '')
+    + (data.evening_narrative ? '🌙 Evening — ' + (data.evening_staff?data.evening_staff+': ':'') + data.evening_narrative + '\n\n' : '')
+    + (data.issues ? 'ADDITIONAL NOTES & ISSUES\n' + data.issues + '\n\n' : '')
+    + 'Submitted by: ' + (data.submitted_by||'') + ' (' + (data.submitted_role||'') + ')\n'
+    + 'Sent from 3-Rock Builders Management App';
+
+  const subject = encodeURIComponent('🧹 Cleaning Activity Report — ' + dateStr);
+  const bodyEnc = encodeURIComponent(body);
+
+  if (bodyEnc.length > 8000) {
+    navigator.clipboard.writeText(body).then(function(){
+      toast('Report copied — paste into email (too long for auto-launch)', 'info', 6000);
+    }).catch(function(){ toast('Use "Copy Report" to copy', 'info'); });
+    return;
+  }
+  window.location.href = 'mailto:' + (toEmails||'') + '?subject=' + subject + '&body=' + bodyEnc;
+  toast('Email client opened', 'success');
+}
+
+function copyDailyReport() {
+  const preview = document.getElementById('dr-submitted-preview');
+  const data = preview ? preview._reportData : null;
+  if (!data) { toast('No submitted report to copy', 'error'); return; }
+  var attendance = {};
+  try { attendance = typeof data.attendance==='string'?JSON.parse(data.attendance):(data.attendance||{}); } catch(e){}
+  var text = '🧹 Cleaning Activity Report\n'
+    + new Date(data.date+'T12:00:00').toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long',year:'numeric'}) + '\n'
+    + '3 Rock Builders Company Limited\n='.repeat(1) + '='.repeat(49) + '\n\n'
+    + 'Staff Present (' + (data.present_count||0) + '): ' + state.staff.filter(function(s){return (attendance[s.id]||'present')==='present';}).map(function(s){return s.name;}).join(', ') + '\n'
+    + 'Staff Absent (' + (data.absent_count||0) + '): ' + state.staff.filter(function(s){return attendance[s.id]==='absent';}).map(function(s){return s.name;}).join(', ') + '\n'
+    + 'On Permission (' + (data.permission_count||0) + '): ' + state.staff.filter(function(s){return attendance[s.id]==='permission';}).map(function(s){return s.name;}).join(', ') + '\n\n'
+    + (data.morning_narrative ? '🌅 MORNING SHIFT\n'+(data.morning_staff?data.morning_staff+': ':'')+data.morning_narrative+'\n\n':'')
+    + (data.afternoon_narrative ? '☀️ AFTERNOON SHIFT\n'+(data.afternoon_staff?data.afternoon_staff+': ':'')+data.afternoon_narrative+'\n\n':'')
+    + (data.evening_narrative ? '🌙 EVENING SHIFT\n'+(data.evening_staff?data.evening_staff+': ':'')+data.evening_narrative+'\n\n':'')
+    + (data.issues ? 'NOTES & ISSUES\n'+data.issues+'\n\n':'')
+    + 'Submitted by: '+(data.submitted_by||'')+' · '+new Date(data.submitted_at||Date.now()).toLocaleString();
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(function(){toast('Report copied ✅','success');});
+  } else {
+    const ta=document.createElement('textarea'); ta.value=text; ta.style.position='fixed'; ta.style.opacity='0';
+    document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta);
+    toast('Copied','success');
+  }
+}
+
+function exportDailyReportPDF() {
+  const preview = document.getElementById('dr-submitted-preview');
+  const data = preview ? preview._reportData : null;
+  if (!data) { toast('No submitted report to export', 'error'); return; }
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({ unit: 'mm', format: 'a4' });
+  const dateStr = new Date(data.date+'T12:00:00').toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+
+  // Header
+  doc.setFillColor(30,58,95); doc.rect(0,0,210,38,'F');
+  doc.setFillColor(220,38,38); doc.rect(0,36,210,3,'F');
+  doc.setTextColor(255,255,255); doc.setFontSize(20); doc.setFont('helvetica','bold');
+  doc.text('Cleaning Activity Report',14,18);
+  doc.setFontSize(10); doc.setFont('helvetica','normal');
+  doc.text(dateStr,14,27);
+  doc.text('3 Rock Builders Company Limited',14,34);
+
+  var y = 48;
+  var attendance = {};
+  try { attendance = typeof data.attendance==='string'?JSON.parse(data.attendance):(data.attendance||{}); } catch(e){}
+  var presentList = state.staff.filter(function(s){return (attendance[s.id]||'present')==='present';});
+  var absentList  = state.staff.filter(function(s){return attendance[s.id]==='absent';});
+  var permList    = state.staff.filter(function(s){return attendance[s.id]==='permission';});
+
+  function pdfSection(title, color) {
+    doc.setFillColor(color[0],color[1],color[2]); doc.rect(14,y,182,7,'F');
+    doc.setTextColor(255,255,255); doc.setFont('helvetica','bold'); doc.setFontSize(9);
+    doc.text(title,16,y+5); y+=9;
+    doc.setTextColor(30,58,95); doc.setFont('helvetica','normal'); doc.setFontSize(8.5);
+  }
+  function pdfText(txt) {
+    var lines = doc.splitTextToSize(txt||'', 178);
+    lines.forEach(function(l){ doc.text(l,16,y); y+=5.5; if(y>275){doc.addPage();y=20;} });
+  }
+
+  pdfSection('EXECUTIVE SUMMARY',[30,58,95]);
+  pdfText('Staff Present ('+presentList.length+'): '+presentList.map(function(s){return s.name;}).join(', '));
+  pdfText('Staff Absent ('+absentList.length+'): '+(absentList.length?absentList.map(function(s){return s.name;}).join(', '):'None'));
+  pdfText('On Permission ('+permList.length+'): '+(permList.length?permList.map(function(s){return s.name;}).join(', '):'None'));
+  y+=4;
+
+  if (data.morning_narrative) {
+    pdfSection('MORNING SHIFT',[22,101,52]);
+    if (data.morning_staff) { doc.setFont('helvetica','bold'); pdfText(data.morning_staff.toUpperCase()+':'); doc.setFont('helvetica','normal'); }
+    pdfText(data.morning_narrative); y+=4;
+  }
+  if (data.afternoon_narrative) {
+    pdfSection('AFTERNOON SHIFT',[3,105,161]);
+    if (data.afternoon_staff) { doc.setFont('helvetica','bold'); pdfText(data.afternoon_staff.toUpperCase()+':'); doc.setFont('helvetica','normal'); }
+    pdfText(data.afternoon_narrative); y+=4;
+  }
+  if (data.evening_narrative) {
+    pdfSection('EVENING SHIFT',[124,58,237]);
+    if (data.evening_staff) { doc.setFont('helvetica','bold'); pdfText(data.evening_staff.toUpperCase()+':'); doc.setFont('helvetica','normal'); }
+    pdfText(data.evening_narrative); y+=4;
+  }
+  if (data.issues && data.issues.trim()) {
+    pdfSection('ADDITIONAL NOTES & ISSUES',[185,28,28]);
+    pdfText(data.issues); y+=4;
+  }
+
+  // Footer
+  doc.setFillColor(240,244,248); doc.rect(14,y,182,18,'F');
+  doc.setTextColor(100,116,139); doc.setFontSize(8);
+  doc.text('Generated: '+new Date(data.submitted_at||Date.now()).toLocaleString(),16,y+6);
+  doc.setTextColor(30,58,95); doc.setFont('helvetica','bold'); doc.setFontSize(9);
+  doc.text(data.submitted_by||'',16,y+12);
+  doc.setFont('helvetica','normal'); doc.setFontSize(8); doc.setTextColor(100,116,139);
+  doc.text((data.submitted_role||'').charAt(0).toUpperCase()+(data.submitted_role||'').slice(1),16,y+17);
+
+  doc.save('3Rock_CleaningReport_'+data.date+'.pdf');
+}
+
+// ── Missed-report check (runs on login) ──────────────────────────
+
+async function checkMissedDailyReport() {
+  if (!currentUser || currentUser.role === 'cleaner') return;
+  const yesterday = new Date();
+  yesterday.setDate(yesterday.getDate() - 1);
+  const yd = yesterday.toISOString().slice(0,10);
+  // Skip Sundays
+  if (yesterday.getDay() === 0) return;
+  try {
+    const { data, error } = await supabaseClient.from('daily_reports').select('date').eq('date', yd).single();
+    if (error || !data) {
+      // No report for yesterday — show banner
+      showMissedReportBanner(yd);
+    }
+  } catch(e) {}
+}
+
+function showMissedReportBanner(date) {
+  const dateStr = new Date(date+'T12:00:00').toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long'});
+  const existing = document.getElementById('missed-report-banner');
+  if (existing) existing.remove();
+  const banner = document.createElement('div');
+  banner.id = 'missed-report-banner';
+  banner.style.cssText = 'position:fixed;top:0;left:0;right:0;z-index:8000;background:#dc2626;color:#fff;padding:10px 16px;display:flex;align-items:center;justify-content:space-between;font-size:12px;font-weight:600;gap:8px';
+  banner.innerHTML = '<span>⚠️ No daily report submitted for <strong>' + esc(dateStr) + '</strong></span>'
+    + '<div style="display:flex;gap:8px">'
+    + '<button onclick="quickFillMissedReport(\'' + date + '\')" style="background:#fff;color:#dc2626;border:none;border-radius:12px;padding:4px 12px;font-size:11px;font-weight:700;cursor:pointer">Submit Now</button>'
+    + '<button onclick="document.getElementById(\'missed-report-banner\').remove()" style="background:rgba(255,255,255,.2);border:none;color:#fff;border-radius:50%;width:22px;height:22px;font-size:14px;cursor:pointer;line-height:1">✕</button>'
+    + '</div>';
+  document.body.prepend(banner);
+}
+
+function quickFillMissedReport(date) {
+  document.getElementById('missed-report-banner') && document.getElementById('missed-report-banner').remove();
+  document.getElementById('daily-report-date').value = date;
+  goToTab('dailyreport');
+}
+
+// ── Payment reminder check (runs on login + daily) ───────────────
+
+function checkPaymentReminder() {
+  if (!currentUser || !['director','manager'].includes(currentUser.role)) return;
+  const s = getPayrollSettings();
+  if (!s.reminderDay) return;
+  const today = new Date();
+  const dayOfMonth = today.getDate();
+  if (dayOfMonth !== parseInt(s.reminderDay)) return;
+
+  // Check if reminder already dismissed today
+  const dismissKey = '3rock_payreminder_' + today.toISOString().slice(0,10);
+  if (localStorage.getItem(dismissKey)) return;
+
+  const month = today.toISOString().slice(0,7);
+  const monthLabel = today.toLocaleDateString('en-GB',{month:'long',year:'numeric'});
+  const records = getPayrollRecords(month);
+  const totalNet = state.staff.reduce(function(sum, st) {
+    const rec = records[st.id] || {};
+    const absDed = (rec.absentNoPerm||0)*s.absentRate;
+    const uniDed = (rec.uniformDays||0)*s.uniformRate;
+    const totalDed = absDed + uniDed + (parseFloat(rec.otherDeductions)||0);
+    return sum + (s.baseSalary - totalDed);
+  }, 0);
+
+  const existing = document.getElementById('payment-reminder-banner');
+  if (existing) existing.remove();
+  const banner = document.createElement('div');
+  banner.id = 'payment-reminder-banner';
+  banner.style.cssText = 'position:fixed;top:0;left:0;right:0;z-index:8001;background:#0369a1;color:#fff;padding:10px 16px;display:flex;align-items:center;justify-content:space-between;font-size:12px;font-weight:600;gap:8px';
+  banner.innerHTML = '<span>💰 Payroll Reminder: <strong>' + esc(monthLabel) + '</strong> — Net payout GHC <strong>' + totalNet.toLocaleString() + '</strong></span>'
+    + '<div style="display:flex;gap:8px">'
+    + '<button onclick="sendPayrollReminderEmail(\'' + month + '\',\'' + monthLabel + '\',' + totalNet + ')" style="background:#fff;color:#0369a1;border:none;border-radius:12px;padding:4px 12px;font-size:11px;font-weight:700;cursor:pointer">Send Reminder</button>'
+    + '<button onclick="goToTab(\'payroll\')" style="background:rgba(255,255,255,.2);border:none;color:#fff;border-radius:12px;padding:4px 12px;font-size:11px;cursor:pointer">View Payroll</button>'
+    + '<button onclick="dismissPaymentReminder(\'' + dismissKey + '\')" style="background:rgba(255,255,255,.2);border:none;color:#fff;border-radius:50%;width:22px;height:22px;font-size:14px;cursor:pointer;line-height:1">✕</button>'
+    + '</div>';
+  document.body.prepend(banner);
+}
+
+function dismissPaymentReminder(key) {
+  localStorage.setItem(key, '1');
+  const b = document.getElementById('payment-reminder-banner');
+  if (b) b.remove();
+}
+
+function sendPayrollReminderEmail(month, monthLabel, totalNet) {
+  const s = getPayrollSettings();
+  const to = [s.directorEmails, s.managerEmails].filter(Boolean).join(',');
+  const subject = encodeURIComponent('💰 Payroll Payment Reminder — ' + monthLabel);
+  const body = encodeURIComponent(
+    '3 Rock Builders Company Limited\nPayroll Payment Reminder\n\nMonth: ' + monthLabel
+    + '\nTotal Staff: ' + state.staff.length
+    + '\nEstimated Net Payout: GHC ' + totalNet.toLocaleString()
+    + '\n\nPlease review the payroll register in the management app and process payment.\n\nSent from 3-Rock Builders Management App'
+  );
+  window.location.href = 'mailto:' + to + '?subject=' + subject + '&body=' + body;
+  dismissPaymentReminder('3rock_payreminder_' + new Date().toISOString().slice(0,10));
+  toast('Payroll reminder email opened', 'success');
+}
+
+// ── goToTab handler for dailyreport ──────────────────────────────
+// (handled in the goToTab extension below — no changes needed here)
+
+
+// ================================================================
+// EXTEND buildBottomNav to include payroll + daily report tabs
+// ================================================================
+var _origBuildBottomNav = buildBottomNav;
+buildBottomNav = function() {
+  const nav = document.getElementById('bottom-nav');
+  if (currentUser.role === 'cleaner') {
+    nav.innerHTML = '<button class="nav-item active" onclick="goToTab(\'tasks\')" id="nav-tasks"><span class="nav-icon">✅</span><span class="nav-label">My Tasks</span></button>'
+      + '<button class="nav-item" onclick="goToTab(\'dashboard\')" id="nav-dashboard"><span class="nav-icon">🏠</span><span class="nav-label">Home</span></button>';
+  } else {
+    nav.innerHTML = '<button class="nav-item active" onclick="goToTab(\'dashboard\')" id="nav-dashboard"><span class="nav-icon">🏠</span><span class="nav-label">Home</span></button>'
+      + '<button class="nav-item" onclick="goToTab(\'staff\')" id="nav-staff"><span class="nav-icon">👥</span><span class="nav-label">Staff</span></button>'
+      + '<button class="nav-item" onclick="goToTab(\'inventory\')" id="nav-inventory"><span class="nav-icon">📦</span><span class="nav-label">Stock</span></button>'
+      + '<button class="nav-item" onclick="goToTab(\'jobs\')" id="nav-jobs"><span class="nav-icon">📋</span><span class="nav-label">Jobs</span></button>'
+      + '<button class="nav-item" onclick="goToTab(\'tasks\')" id="nav-tasks"><span class="nav-icon">✅</span><span class="nav-label">Tasks</span></button>'
+      + '<button class="nav-item" onclick="goToTab(\'incidents\')" id="nav-incidents"><span class="nav-icon">🚨</span><span class="nav-label">Reports</span></button>'
+      + '<button class="nav-item" onclick="goToTab(\'payroll\')" id="nav-payroll"><span class="nav-icon">💰</span><span class="nav-label">Payroll</span></button>'
+      + '<button class="nav-item" onclick="goToTab(\'dailyreport\')" id="nav-dailyreport"><span class="nav-icon">📊</span><span class="nav-label">Daily</span></button>';
+  }
+};
+
+// Extend buildQuickActions
+var _origBuildQuickActions = buildQuickActions;
+buildQuickActions = function() {
+  const items = [
+    { icon:'👥', label:'Enrol Staff', action:"openModal('modal-add-staff')", sup:true },
+    { icon:'📋', label:'New Job', action:"openModal('modal-add-job')", sup:true },
+    { icon:'📦', label:'Add Item', action:"openModal('modal-add-inv')", sup:true },
+    { icon:'🗓', label:'Attendance', action:'openAttendance()', sup:true },
+    { icon:'🚨', label:'Incident', action:"openModal('modal-incident')", sup:false },
+    { icon:'📊', label:'Reports', action:"goToTab('reports')", sup:false },
+    { icon:'💰', label:'Payroll', action:"goToTab('payroll')", sup:false },
+    { icon:'📧', label:'Daily Report', action:"goToTab('dailyreport')", sup:false }
+  ];
+  const g = document.getElementById('qa-grid');
+  if (g) g.innerHTML = items.map(function(a) { return '<div class="qa-btn ' + (!a.sup || canEdit() ? '' : 'locked') + '" onclick="' + a.action + '"><span class="qa-icon">' + a.icon + '</span><span class="qa-label">' + esc(a.label) + '</span></div>'; }).join('');
+};
+
+// Extend goToTab for new screens
+var _origGoToTab = goToTab;
+goToTab = async function(tab, filter) {
+  if (tab === 'payroll') {
+    document.querySelectorAll('.screen').forEach(function(s){s.classList.remove('active');});
+    document.querySelectorAll('.nav-item').forEach(function(n){n.classList.remove('active');});
+    const screenEl = document.getElementById('screen-payroll');
+    const navEl = document.getElementById('nav-payroll');
+    if (screenEl) screenEl.classList.add('active');
+    if (navEl) navEl.classList.add('active');
+    const monthEl = document.getElementById('payroll-month');
+    if (monthEl && !monthEl.value) {
+      monthEl.value = todayStr().slice(0,7);
+      payrollCurrentMonth = monthEl.value;
+    } else if (monthEl && monthEl.value) {
+      payrollCurrentMonth = monthEl.value;
+    }
+    renderPayroll();
+    return;
+  }
+  if (tab === 'dailyreport') {
+    document.querySelectorAll('.screen').forEach(function(s){s.classList.remove('active');});
+    document.querySelectorAll('.nav-item').forEach(function(n){n.classList.remove('active');});
+    const screenEl = document.getElementById('screen-dailyreport');
+    const navEl = document.getElementById('nav-dailyreport');
+    if (screenEl) screenEl.classList.add('active');
+    if (navEl) navEl.classList.add('active');
+    const drDate = document.getElementById('daily-report-date');
+    if (drDate && !drDate.value) drDate.value = todayStr();
+    loadDailyReportForDate();
+    return;
+  }
+  return _origGoToTab(tab, filter);
+};
+
+// Fix supervisorUncheck which is referenced in the task UI
+function supervisorUncheck(taskId, shift) { return uncheckTask(taskId, shift); }
+
 </script>
+
+<!-- PAYROLL SETTINGS MODAL -->
+<div class="modal-overlay center-ov" id="modal-payroll-settings" style="display:none" onclick="overlayClick(event,'modal-payroll-settings')">
+  <div class="modal center-m">
+    <div class="modal-header" style="background:#0369a1"><span class="modal-title">⚙ Payroll Settings</span><button class="modal-close" onclick="closeModal('modal-payroll-settings')">✕</button></div>
+    <div class="modal-body">
+      <div class="form-group"><label class="form-label">Base Monthly Salary (GHC)</label><input type="number" class="form-control" id="ps-base-salary" min="0" step="10" placeholder="1100"></div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Absent Deduction (GHC/day)</label><input type="number" class="form-control" id="ps-absent-rate" min="0" step="5" placeholder="50"></div>
+        <div class="form-group"><label class="form-label">Uniform Violation (GHC/day)</label><input type="number" class="form-control" id="ps-uniform-rate" min="0" step="5" placeholder="0"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Expected Working Days</label><input type="number" class="form-control" id="ps-working-days" min="1" max="31" placeholder="26"></div>
+        <div class="form-group"><label class="form-label">Off Days per Month</label><input type="number" class="form-control" id="ps-off-days" min="0" max="10" placeholder="4"></div>
+      </div>
+      <div class="form-group"><label class="form-label">Director Email(s) <span style="font-weight:400;color:var(--text-muted)">(comma-separated — used for daily report & payroll reminders)</span></label><input type="text" class="form-control" id="ps-director-emails" placeholder="director@company.com, owner@company.com"></div>
+      <div class="form-group"><label class="form-label">Manager Email(s) <span style="font-weight:400;color:var(--text-muted)">(comma-separated)</span></label><input type="text" class="form-control" id="ps-manager-emails" placeholder="manager@company.com"></div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Payment Reminder Day <span style="font-weight:400;color:var(--text-muted)">(day of month)</span></label><input type="number" class="form-control" id="ps-reminder-day" min="1" max="28" placeholder="25" title="App will alert on this day each month to process payroll"></div>
+        <div class="form-group"><label class="form-label">Report Sent-By Time</label><input type="time" class="form-control" id="ps-report-deadline" value="21:00" title="Alert shows if report not submitted by this time"></div>
+      </div>
+      <div class="form-actions">
+        <button class="btn btn-outline" onclick="closeModal('modal-payroll-settings')">Cancel</button>
+        <button class="btn btn-primary" style="background:#0369a1" onclick="savePayrollSettings()">Save Settings</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PAYROLL STAFF ENTRY MODAL -->
+<div class="modal-overlay center-ov" id="modal-payroll-entry" style="display:none" onclick="overlayClick(event,'modal-payroll-entry')">
+  <div class="modal center-m">
+    <div class="modal-header" style="background:#0369a1"><span class="modal-title" id="payroll-entry-title">Edit Payroll Entry</span><button class="modal-close" onclick="closeModal('modal-payroll-entry')">✕</button></div>
+    <div class="modal-body">
+      <div class="form-group"><label class="form-label">Staff Member</label><input type="text" class="form-control" id="pe-staff-name" readonly style="background:#e8edf7"></div>
+      <input type="hidden" id="pe-staff-id">
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Total Working Days</label><input type="number" class="form-control" id="pe-working-days" min="0" max="31"></div>
+        <div class="form-group"><label class="form-label">Days Present</label><input type="number" class="form-control" id="pe-days-present" min="0" max="31" oninput="calcPayrollEntry()"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Absent w/ Permission</label><input type="number" class="form-control" id="pe-absent-perm" min="0" value="0" oninput="calcPayrollEntry()"></div>
+        <div class="form-group"><label class="form-label">Absent NO Permission</label><input type="number" class="form-control" id="pe-absent-noperm" min="0" value="0" oninput="calcPayrollEntry()"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Uniform Violation Days</label><input type="number" class="form-control" id="pe-uniform-days" min="0" value="0" oninput="calcPayrollEntry()"></div>
+        <div class="form-group"><label class="form-label">Other Deductions (GHC)</label><input type="number" class="form-control" id="pe-other-deductions" min="0" value="0" oninput="calcPayrollEntry()"></div>
+      </div>
+      <div id="pe-calc-preview" style="background:var(--off-white);border:1px solid var(--border);border-radius:var(--r-md);padding:12px;margin:10px 0;display:none"></div>
+      <div class="form-group"><label class="form-label">Remarks</label><input type="text" class="form-control" id="pe-remarks" placeholder="e.g. Probation, Bonus, Medical leave..."></div>
+      <div class="form-actions">
+        <button class="btn btn-outline" onclick="closeModal('modal-payroll-entry')">Cancel</button>
+        <button class="btn btn-primary" style="background:#0369a1" onclick="savePayrollEntry()">Save Entry</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- IMAGE VIEW MODAL — must be last in DOM so it always stacks on top -->
 <div class="modal-overlay center-ov" id="modal-image-view" style="display:none;z-index:99999!important" onclick="if(event.target===this)closeModal('modal-image-view')">
   <div style="background:#fff;border-radius:16px;max-width:92vw;width:100%;overflow:hidden;box-shadow:0 24px 64px rgba(0,0,0,.5)">
